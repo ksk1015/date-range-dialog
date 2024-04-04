@@ -1,0 +1,41 @@
+:root,
+:host {
+  --color-main: #3d64cb;
+  --color-main-light: #e7f0fe;
+  --color-ink: #333;
+  --color-ink-light: #888;
+  --color-gray: #888;
+  --color-gray-light: #f5f5f5;
+
+  --radius: 4px;
+
+  --scroll-width: 6px;
+  --scroll-radius: 4px;
+  --scroll-bg-color: var(--color-gray-light);
+  --scroll-thumb-color: #aaa;
+
+  --font-size-base: 14px;
+  --line-height-base: 1.5;
+
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-ink);
+
+  width: fit-content;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  button {
+    &:not(:disabled) {
+      cursor: pointer;
+    }
+  }
+
+  :where(:focus-visible) {
+    outline: 2px solid var(--focus-color, Highlight);
+  }
+}

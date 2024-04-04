@@ -1,0 +1,155 @@
+.calenders {
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.header {
+  position: relative;
+  padding: .6em var(--scroll-width) .6em 0;
+  background-image: linear-gradient(#eee, #eee);
+  background-repeat: no-repeat;
+  background-size: calc(100% - var(--scroll-width) - 10px) 1px;
+  background-position: 5px bottom;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  > div {
+    display: grid;
+    place-content: center;
+  }
+}
+
+.scroll {
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: var(--scroll-width);
+  }
+  &::-webkit-scrollbar-track {
+    background: var(--scroll-bg-color);
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb-color);
+    border-radius: var(--scroll-radius);
+  }
+}
+
+.body {
+  padding: 1.2em 0;
+  line-height: 1;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  > div {
+    grid-column: 1 / span 3;
+    padding: 0 0.5em;
+    color: #888;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+  }
+  > button {
+    --bg-color: transparent;
+    --bg-width: 100%;
+    --bg-position-x: 0%;
+    --disc-color: transparent
+    --text-color: #000;
+    font-size: 100%;
+    border: none;
+    padding: 1px 2px;
+    background-color: transparent; /* --bg-color は linear-gradient で指定 */
+    background-image: linear-gradient(var(--bg-color), var(--bg-color));
+    background-position: var(--bg-position-x) 50%;
+    background-size: var(--bg-width) calc(100% - 2px);
+    background-repeat: no-repeat;
+    color: var(--text-color);
+    cursor: pointer;
+    outline: none;
+    > span {
+      position: relative;
+      display: grid;
+      place-content: center;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background-color: var(--disc-color);
+      pointer-events: none;
+    }
+
+    /* 曜日の位置を grid-column-start で */
+    &[data-weekday='0'] {
+      grid-column-start: 1;
+    }
+    &[data-weekday='1'] {
+      grid-column-start: 2;
+    }
+    &[data-weekday='2'] {
+      grid-column-start: 3;
+    }
+    &[data-weekday='3'] {
+      grid-column-start: 4;
+    }
+    &[data-weekday='4'] {
+      grid-column-start: 5;
+    }
+    &[data-weekday='5'] {
+      grid-column-start: 6;
+    }
+    &[data-weekday='6'] {
+      grid-column-start: 7;
+    }
+
+    /* 選択不可 */
+    &:disabled {
+      --text-color: #ccc;
+      cursor: default;
+    }
+
+    /* 今日 */
+    &[data-today='true'] > span {
+      outline: 1px solid #666;
+      outline-offset: 1px;
+    }
+
+    /* hover,focus状態 */
+    &:is(:hover, :focus):not(:disabled, [aria-pressed='true']) {
+      --disc-color: #c6dafa;
+    }
+
+    /* 押下状態の丸 */
+    &[aria-pressed='true'] {
+      --disc-color: #1a73e8;
+      --text-color: #fff;
+    }
+
+    /* 選択されてる背景 */
+    :has([data-end='true']) &:is([data-start='true'], [data-start='true'] ~ button):not(
+      [data-end='true'] ~ button
+    ) {
+      --bg-color: #e7f0fe;
+    }
+    /* 選択されてる背景 開始日は右側のみに */
+    &[data-start='true']:not([data-end='true']) {
+      --bg-width: 50%;
+      --bg-position-x: 100%;
+    }
+    /* 選択されてる背景 終了日は左側のみに */
+    &[data-end='true']:not([data-start='true']) {
+      --bg-width: 50%;
+    }
+    /* 選択されてる背景 開始日かつ終了日は少し丸く */
+    &[data-start='true'][data-end='true'] {
+      border-radius: 30%;
+    }
+
+    /* 開始日が選択されて end候補をhover,focusしてる状態 */
+    /* todo: focusもhoverと同じようにしたい（js側で必要かもなーー） */
+    :has([data-start='true']):not(:has([data-end='true'])):has(button:not(:disabled):hover) & {
+      &:is([data-start='true'], [data-start='true'] ~ button):not(:hover ~ button) {
+        --bg-color: #f5f5f5;
+      }
+      &:hover {
+        --bg-width: 50%;
+      }
+    }
+  }
+}

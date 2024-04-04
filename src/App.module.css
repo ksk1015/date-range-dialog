@@ -1,0 +1,132 @@
+.dialog {
+  border: none;
+  padding: 0;
+  background: none;
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.1));
+}
+
+.app {
+  --menu-width: 0px;
+  --calender-width: 280px;
+  --height: 400px;
+  --template: 'calendar' var(--height) 'footer' auto / var(--calender-width);
+  &[data-has-menu] {
+    --menu-width: 200px;
+    --calender-width: 260px;
+    --template: 'menu calendar' var(--height) 'footer footer' auto /
+      var(--menu-width) var(--calender-width);
+  }
+
+  display: grid;
+  grid-template: var(--template);
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: var(--radius);
+}
+
+.appMenu {
+  grid-area: menu;
+  border-right: 1px solid #eee;
+}
+
+.appCalendar {
+  grid-area: calendar;
+}
+
+.appFooter {
+  grid-area: footer;
+  border-top: 1px solid #eee;
+  padding: 1em;
+}
+
+.openButton {
+  border: none;
+  padding: 0 10px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  border-radius: var(--radius);
+
+  background: #fff;
+  cursor: pointer;
+  font-size: 100%;
+
+  &::after {
+    content: '';
+    flex-shrink: 0;
+    display: block;
+    background: currentColor;
+    aspect-ratio: 2 / 1.73;
+    margin-top: 0.1em;
+    width: auto;
+    height: 0.6em;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+}
+
+.currentRange {
+  font-size: 90%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.3em 0;
+
+  > span {
+    font-weight: bold;
+    &[data-active] {
+      color: var(--color-main);
+    }
+  }
+  > button {
+    border: none;
+    padding: 0 0.3em;
+    border-radius: var(--radius);
+    background: none;
+    cursor: pointer;
+    font-size: 80%;
+    &:disabled {
+      display: none;
+    }
+    &:where(:hover, :focus) {
+      background-color: #f5f5f5;
+    }
+  }
+}
+
+.submit {
+  margin-top: 0.6em;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+}
+
+.applyButton {
+  border: 1px solid currentColor;
+  padding: 0.2em 1em;
+  width: 8rem;
+  border-radius: var(--radius);
+  background: none;
+  font-size: 100%;
+  font-weight: bold;
+  &:not(:disabled) {
+    &:where(:hover, :focus) {
+      background-color: var(--color-gray-light);
+    }
+  }
+}
+
+.cancelButton {
+  border: 1px solid currentColor;
+  padding: 0.2em 1em;
+  width: 8rem;
+  border-radius: var(--radius);
+  background: none;
+  font-size: 100%;
+  &:where(:hover, :focus) {
+    background-color: var(--color-gray-light);
+  }
+}

@@ -1,0 +1,36 @@
+.menu {
+  font-size: 13px;
+  padding: 0.3em 0;
+  max-height: 100%;
+  display: grid;
+  overflow-y: scroll;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: var(--scroll-width);
+  }
+  &::-webkit-scrollbar-track {
+    background: var(--scroll-bg-color);
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb-color);
+    border-radius: var(--scroll-radius);
+  }
+}
+
+.menu > button {
+  padding: 0.6em 1.2em;
+  display: flex;
+  align-items: flex-start;
+  font-size: 100%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  &:where(:hover, :focus) {
+    background-color: #f5f5f5;
+  }
+  &[aria-pressed='true'] {
+    background-color: #e7f0fe;
+    color: #1a73e8;
+  }
+}

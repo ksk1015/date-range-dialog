@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Date Range Dialog</title>
+    <style>
+      body {
+        font-family: 'Hiragino Sans', 'ヒラギノ角ゴシック',
+          'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'ＭＳ Ｐゴシック',
+          'Helvetica Neue', Helvetica, Arial, sans-serif;
+        background-color: #fbf9ef;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Date Range Dialog</h1>
+    <h2>シンプルなデモ</h2>
+    <p>
+      <button id="demo1-button">
+        期間を選択:
+        <span
+          is="range-span"
+          range="2024-03-01,2024-03-14"
+          format="YYYY年M月D日"
+          separator=" 〜 "
+          empty="未選択"
+        ></span>
+      </button>
+      <input type="hidden" id="demo1-start" value="2024-03-01" />
+      <input type="hidden" id="demo1-end" value="2024-03-14" />
+    </p>
+    <script type="module">
+      import { dateRangeDialog, cdate } from '/src/main.tsx'
+
+      const button = document.getElementById('demo1-button')
+      const rangeSpan = button.querySelector('span[is="range-span"]')
+      const inputStart = document.getElementById('demo1-start')
+      const inputEnd = document.getElementById('demo1-end')
+
+      const showDialog = () => {
+        const start = inputStart.value
+        const end = inputEnd.value
+        dateRangeDialog({
+          min: '2021-01-01',
+          max: cdate().format('YYYY-MM-DD'),
+          defaultRange: [inputStart.value, inputEnd.value],
+          menu: [
+            '今日',
+            '昨日',
+            '今週',
+            '今週（日曜〜本日）',
+            '今週（月曜〜本日）',
+            '今週（土曜〜本日）',
+            '先週',
+            '今月',
+            '先月',
+            '半年',
+            '今年',
+            '昨年',
+            '過去7日間',
+            '過去28日間',
+            '過去30日間',
+            '過去90日間',
+            '過去12ヶ月',
+          ],
+          onSubmit: (start, end) => {
+            console.log('onSubmit', start, end)
+            rangeSpan.range = start ? [start, end] : null
+            inputStart.value = start
+            inputEnd.value = end
+          },
+          onCancel: () => {
+            console.log('onCancel')
+          },
+        })
+      }
+
+      button.addEventListener('click', showDialog)
+      showDialog()
+    </script>
+  </body>
+</html>
