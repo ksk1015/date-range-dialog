@@ -13,6 +13,8 @@ import { cdate } from 'cdate'
  * ```
  */
 export function registerRangeSpan() {
+  if (customElements.get('range-span')) return
+
   class RangeSpan extends HTMLSpanElement {
     static get observedAttributes() {
       return ['range', 'format', 'separator', 'empty']
