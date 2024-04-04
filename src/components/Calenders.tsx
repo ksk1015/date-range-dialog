@@ -35,7 +35,7 @@ export function Calenders({
   // 表示時にスクロール
   useEffect(() => {
     if (intoVisble) {
-      scrollToRange()
+      requestAnimationFrame(() => scrollToRange())
     }
   }, [intoVisble])
   // メニュー変更時にスクロール

@@ -28,7 +28,7 @@ export function Menu({
   // 表示時にスクロール
   useEffect(() => {
     if (intoVisble) {
-      scrollToPressed()
+      requestAnimationFrame(() => scrollToPressed())
     }
   }, [intoVisble])
 
