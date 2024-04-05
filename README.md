@@ -4,9 +4,48 @@
 
 ## 使い方
 
+ビルドすると `dist/date-range-dialog.js` が生成されます。
+
+```html
+<button id="date-range-button">
+  範囲:
+  <span
+    is="range-span"
+    id="date-range-text"
+    range="2024-03-01,2024-03-14"
+    format="YYYY年M月D日"
+    separator=" 〜 "
+    empty="未選択"
+  ></span>
+</button>
+<input type="hidden" name="date-range-start" id="date-range-start" value="2024-03-01" />
+<input type="hidden" name="date-range-end" id="date-range-end" value="2024-03-14" />
+<script>
+  import { dateRangeDialog, cdate } from '/path-to/date-range-dialog.js'
+
+  // jQueryなら
+  $('#date-range-button').on('click', () => {
+    const start = $('#date-range-start').val()
+    const end = $('#date-range-end').val()
+    const range = start && end ? [start, end] : undefined
+    dateRangeDialog({
+      min: '2021-01-01',
+      defaultRange: range,
+      menu: ['今日', '昨日', '今週', '先週', '今月', '先月'],
+      onSubmit: (start, end) => {
+        $('#date-range-start').val(start)
+        $('#date-range-end').val(end)
+        $('#date-range-text').attr('range', start ? `${start},${end}` : '')
+      },
+    })
+  })
+```
+
+以下、関数の詳細です
+
 ```javascript
 // ライブラリを読み込む、cdate という日付操作ライブラリも読み込み可能です
-import { dateRangeDialog, cdate } from 'date-range-dialog.es.js'
+import { dateRangeDialog, cdate } from '/path-to/date-range-dialog.js'
 
 dateRangeDialog({
   min: '2021-01-01', // 最小日付 省略すると今日
@@ -73,7 +112,7 @@ dateRangeDialog({
 ```
 
 ```javascript
-// 以下のように range-span を使うことができます
+// 以下のように range-span rangeを設定できます
 const rangeSpan = document.querySelector('#range-span')
 dateRangeDialog({
   onSubmit: (start, end) => {
@@ -109,5 +148,3 @@ npm run build
 # ビルド成果物の確認用サーバー起動
 npm run preview
 ```
-
-### コマンド
