@@ -1,43 +1,32 @@
-import { useEffect, useRef } from 'preact/hooks'
+import { useRef } from 'preact/hooks'
 import type { MenuItem } from '../menuItems'
 import styles from './Menu.module.css'
+import type { RefObject } from 'preact'
 
 type Props = {
   menuItems: MenuItem[]
   selectedMenu: string
   pressedMenu: string
-  intoVisble: boolean // 表示時かどうか
   onSelect?: (menu: string, range?: [] | [string] | [string, string]) => void
+  scrollToActiveRef: RefObject<(behavior?: ScrollBehavior) => void> // type Ref だとエラーになる。。。
 }
 
 export function Menu({
   menuItems,
-  selectedMenu,
   pressedMenu,
-  intoVisble,
   onSelect = () => {},
+  scrollToActiveRef,
 }: Props) {
+  // 押下状態ボタンへスクロール
+  // 親から実行できるようpropからのrefにセット
   const scrollerRef = useRef<HTMLDivElement>(null)
-  const scrollToPressed = (behavior?: ScrollBehavior) => {
+  const scrollToActive = (behavior?: ScrollBehavior) => {
     const target = scrollerRef.current?.querySelector(
       `button[aria-label="${pressedMenu}"]`
     )
     target?.scrollIntoView({ block: 'center', behavior })
   }
-
-  // 表示時にスクロール
-  useEffect(() => {
-    if (intoVisble) {
-      requestAnimationFrame(() => scrollToPressed())
-    }
-  }, [intoVisble])
-
-  // カレンダー選択時（selectedMenuが空）にスクロール
-  useEffect(() => {
-    if (selectedMenu === '') {
-      scrollToPressed()
-    }
-  }, [selectedMenu, pressedMenu])
+  scrollToActiveRef.current = scrollToActive
 
   return (
     <div

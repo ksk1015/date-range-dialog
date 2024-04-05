@@ -1,14 +1,14 @@
-import { useEffect, useRef } from 'preact/hooks'
+import { useRef } from 'preact/hooks'
 import { cdate } from 'cdate'
 import styles from './Calenders.module.css'
+import type { RefObject } from 'preact'
 
 type Props = {
   today: string // YYYY-MM-DD
   min?: string // YYYY-MM-DD
   max?: string // YYYY-MM-DD
   range: [] | [string] | [string, string]
-  selectedMenu: string // 選択されてるメニューラベル（メニュー変更による自動スクロールで使用）
-  intoVisble: boolean // 表示時かどうか
+  scrollToActiveRef: RefObject<(behavior?: ScrollBehavior) => void>
   onSelect?: (range: [] | [string] | [string, string]) => void
 }
 
@@ -20,52 +20,9 @@ export function Calenders({
   min = today,
   max = today,
   range,
-  selectedMenu,
-  intoVisble,
   onSelect = () => {},
+  scrollToActiveRef,
 }: Props) {
-  // 選択範囲（または今日）へスクロール
-  const scrollerRef = useRef<HTMLDivElement>(null)
-  const scrollToRange = (behavior?: ScrollBehavior) => {
-    const target = scrollerRef.current?.querySelector(
-      range[0] ? `button[data-date="${range[0]}"]` : 'button[data-today="true"]'
-    )
-    target?.scrollIntoView({ block: 'center', behavior })
-  }
-  // 表示時にスクロール
-  useEffect(() => {
-    if (intoVisble) {
-      requestAnimationFrame(() => scrollToRange())
-    }
-  }, [intoVisble])
-  // メニュー変更時にスクロール
-  useEffect(() => {
-    if (selectedMenu) {
-      scrollToRange('smooth')
-    }
-  }, [selectedMenu])
-
-  const handleClick = (e: Event) => {
-    const target = e.target as HTMLElement
-    const clickedDate = target.dataset.date
-    if (!clickedDate) return
-    switch (range.length) {
-      case 0: // 日付が選択されていない場合は開始日に
-        onSelect([clickedDate])
-        break
-      case 1: // 日付が1つ選択されている場合は
-        // 開始日より前なら開始日に、後なら終了日に
-        if (clickedDate < range[0]) {
-          onSelect([clickedDate])
-        } else {
-          onSelect([range[0], clickedDate])
-        }
-        break
-      default: // 日付が2つ選択されている場合は開始日に
-        onSelect([clickedDate])
-    }
-  }
-
   // 日付ボタンの生成
   // todo: レンダリング最適化
   // 重さの原因は処理ではなくたくさんの要素の描画なのでバーチャルスクロールにすると良いはず
@@ -98,6 +55,39 @@ export function Calenders({
       </button>
     )
   }
+
+  // 日付ボタンのクリック
+  const handleClick = (e: MouseEvent) => {
+    const target = e.target as HTMLElement
+    const clickedDate = target.dataset.date
+    if (!clickedDate) return
+    switch (range.length) {
+      case 0: // 日付が選択されていない場合は開始日に
+        onSelect([clickedDate])
+        break
+      case 1: // 日付が1つ選択されている場合は
+        // 開始日より前なら開始日に、後なら終了日に
+        if (clickedDate < range[0]) {
+          onSelect([clickedDate])
+        } else {
+          onSelect([range[0], clickedDate])
+        }
+        break
+      default: // 日付が2つ選択されている場合は開始日に
+        onSelect([clickedDate])
+    }
+  }
+
+  // 選択範囲（または今日）へスクロール
+  // 親から実行できるようpropからのrefにセット
+  const scrollerRef = useRef<HTMLDivElement>(null)
+  const scrollToActive = (behavior?: ScrollBehavior) => {
+    const target = scrollerRef.current?.querySelector(
+      range[0] ? `button[data-date="${range[0]}"]` : 'button[data-today="true"]'
+    )
+    target?.scrollIntoView({ block: 'center', behavior })
+  }
+  scrollToActiveRef.current = scrollToActive
 
   return (
     <div class={styles.calenders}>

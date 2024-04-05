@@ -48,13 +48,24 @@ export function App({
   // diaolog.showModal を呼ぶときのレンダリング
   const dialogRef = useRef<HTMLDialogElement>(null)
   const dialogWillOpen = !dialogRef.current || !dialogRef.current.open
+
+  // カレンダー, メニューをスクロールする関数のref
+  const calendersScrollToActiveRef =
+    useRef<(behavior?: ScrollBehavior) => void>(null)
+  const menuScrollToActiveRef =
+    useRef<(behavior?: ScrollBehavior) => void>(null)
+
+  // dialogを表示するときは初期値をセット
   if (dialogWillOpen) {
     setRange(defaultRange || [])
     setSelectedMenu(defaultSelectedMenu)
   }
+  // dialogを表示して、カレンダーとメニューをアクティブな位置へスクロール
   useEffect(() => {
     if (dialogWillOpen) {
       dialogRef.current?.showModal()
+      calendersScrollToActiveRef.current?.()
+      menuScrollToActiveRef.current?.()
     }
   })
 
@@ -94,12 +105,15 @@ export function App({
                 menuItems={menuItems}
                 selectedMenu={selectedMenu}
                 pressedMenu={pressedMenu}
-                intoVisble={dialogWillOpen}
+                scrollToActiveRef={menuScrollToActiveRef}
                 onSelect={(menu, range) => {
                   setSelectedMenu(menu)
                   if (range) {
                     setRange(range)
                   }
+                  requestAnimationFrame(() =>
+                    calendersScrollToActiveRef.current?.('smooth')
+                  )
                 }}
               />
             </div>
@@ -110,11 +124,13 @@ export function App({
               max={max}
               today={today}
               range={range}
-              selectedMenu={selectedMenu}
-              intoVisble={dialogWillOpen}
+              scrollToActiveRef={calendersScrollToActiveRef}
               onSelect={(range) => {
                 setRange(range)
                 setSelectedMenu('')
+                requestAnimationFrame(() =>
+                  menuScrollToActiveRef.current?.('smooth')
+                )
               }}
             />
           </div>
