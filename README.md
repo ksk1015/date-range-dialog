@@ -18,8 +18,18 @@
     empty="未選択"
   ></span>
 </button>
-<input type="hidden" name="date-range-start" id="date-range-start" value="2024-03-01" />
-<input type="hidden" name="date-range-end" id="date-range-end" value="2024-03-14" />
+<input
+  type="hidden"
+  name="date-range-start"
+  id="date-range-start"
+  value="2024-03-01"
+/>
+<input
+  type="hidden"
+  name="date-range-end"
+  id="date-range-end"
+  value="2024-03-14"
+/>
 <script type="module">
   import { dateRangeDialog, cdate } from '/path-to/date-range-dialog.js'
 
@@ -39,6 +49,7 @@
       },
     })
   })
+</script>
 ```
 
 以下、関数の詳細です
